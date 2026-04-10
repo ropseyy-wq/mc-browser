@@ -1,7 +1,12 @@
 "use strict";
 
 const mineflayer = require("mineflayer");
-const { mineflayer: mineflayerViewer } = require("prismarine-viewer");
+let mineflayerViewer = null;
+try {
+  ({ mineflayer: mineflayerViewer } = require("prismarine-viewer"));
+} catch (_) {
+  mineflayerViewer = null;
+}
 
 // Map of userId -> bot instance info
 const activeBots = new Map();
@@ -75,12 +80,16 @@ function spawnBot(userId, mcUsername, serverIp, serverPort, onEvent) {
       info.connected = true;
       onEvent({ type: "connected", username: mcUsername, server: `${serverIp}:${serverPort}` });
 
-      // Start prismarine viewer on unique port
-      try {
-        mineflayerViewer(bot, { port: viewerPort, firstPerson: true });
-        onEvent({ type: "viewer_ready", port: viewerPort });
-      } catch (e) {
-        onEvent({ type: "error", message: "Viewer failed: " + e.message });
+      // Start prismarine viewer on unique port (if optional deps are available)
+      if (mineflayerViewer) {
+        try {
+          mineflayerViewer(bot, { port: viewerPort, firstPerson: true });
+          onEvent({ type: "viewer_ready", port: viewerPort });
+        } catch (e) {
+          onEvent({ type: "error", message: "Viewer failed: " + e.message });
+        }
+      } else {
+        onEvent({ type: "error", message: "Viewer unavailable: missing optional prismarine-viewer dependency (canvas)." });
       }
 
       // Forward chat

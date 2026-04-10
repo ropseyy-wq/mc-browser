@@ -18,12 +18,15 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(session({
+
+const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET || "mc-browser-secret-change-this",
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 7 days
-}));
+});
+
+app.use(sessionMiddleware);
 
 function requireAuth(req, res, next) {
   if (!req.session.userId) return res.status(401).json({ error: "Not logged in" });
@@ -106,8 +109,6 @@ app.post("/api/bot/join", requireAuth, (req, res) => {
 
   const userId = req.session.userId;
 
-  // Will forward events to WS client
-  const wsClient = userWsMap.get(userId);
 
   const info = botManager.spawnBot(userId, mcUsername, serverInfo.ip, serverInfo.port, (event) => {
     const ws = userWsMap.get(userId);
@@ -148,14 +149,8 @@ app.get("/api/admin/servers", requireAdmin, (req, res) => {
 const userWsMap = new Map();
 
 wss.on("connection", (ws, req) => {
-  // Extract session from upgrade request
-  const sessionParser = session({
-    secret: process.env.SESSION_SECRET || "mc-browser-secret-change-this",
-    resave: false,
-    saveUninitialized: false,
-  });
-
-  sessionParser(req, {}, () => {
+  // Re-use the same session middleware/store as HTTP routes
+  sessionMiddleware(req, {}, () => {
     const userId = req.session && req.session.userId;
     if (!userId) { ws.close(); return; }
 
@@ -198,7 +193,7 @@ setInterval(() => {
 }, 1000);
 
 // ---- CATCH ALL -> serve index.html ----
-app.get("*", (req, res) => {
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 

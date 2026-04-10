@@ -69,7 +69,6 @@ function connectWs() {
       const host = location.hostname;
       viewerEl.src = `${location.protocol}//${host}:${msg.port || msg.viewerPort}`;
       viewerEl.classList.remove('hidden');
-      setStatus('Connected. If viewer stays blank, forward/open the shown viewer port in your host panel.');
     }
     if (msg.type === 'error') setStatus(`Error: ${msg.message}`);
     if (msg.type === 'kicked') setStatus(`Kicked: ${msg.reason}`);
@@ -89,8 +88,6 @@ async function refreshMe() {
   authCard.classList.add('hidden');
   appCard.classList.remove('hidden');
   welcome.textContent = `Hello ${me.username}`;
-  const mcInput = document.getElementById('mcUsername');
-  if (!mcInput.value.trim()) mcInput.value = me.username;
   await loadServers();
   connectWs();
 }
@@ -127,7 +124,7 @@ document.getElementById('addServerBtn').onclick = async () => {
   if (!raw) return setStatus('Server host is required.');
 
   let ip = raw;
-  let port = 25565;
+  let port = raw;
   const parts = raw.split(':');
   if (parts.length === 2 && /^\d+$/.test(parts[1])) {
     ip = parts[0];

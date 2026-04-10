@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MC Browser</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>MC Browser</h1>
+
+    <section id="authCard" class="card">
+      <h2>Login / Register</h2>
+      <input id="authUsername" placeholder="Account username" />
+      <input id="authPassword" type="password" placeholder="Password" />
+      <div class="row">
+        <button id="loginBtn">Login</button>
+        <button id="registerBtn" class="secondary">Register</button>
+      </div>
+    </section>
+
+    <section id="appCard" class="card hidden">
+      <h2 id="welcome"></h2>
+      <button id="logoutBtn" class="secondary">Logout</button>
+
+      <h3>Add server</h3>
+      <div class="row wrap">
+        <input id="serverName" placeholder="Name" />
+        <input id="serverIp" placeholder="IP / host" />
+        <input id="serverPort" type="number" min="1" max="65535" value="25565" />
+        <button id="addServerBtn">Add</button>
+      </div>
+
+      <h3>Your servers</h3>
+      <ul id="serverList"></ul>
+
+      <h3>Join</h3>
+      <div class="row wrap">
+        <input id="mcUsername" placeholder="Minecraft username" />
+        <button id="joinBtn">Join selected server</button>
+        <button id="disconnectBtn" class="secondary">Disconnect</button>
+      </div>
+
+      <div id="status" class="status"></div>
+      <iframe id="viewer" class="viewer hidden" title="Minecraft viewer"></iframe>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

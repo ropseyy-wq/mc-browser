@@ -120,8 +120,17 @@ document.getElementById('logoutBtn').onclick = async () => {
 
 document.getElementById('addServerBtn').onclick = async () => {
   const name = document.getElementById('serverName').value.trim();
-  const ip = document.getElementById('serverIp').value.trim();
-  const port = Number(document.getElementById('serverPort').value || 25565);
+  const raw = document.getElementById('serverIp').value.trim();
+  if (!raw) return setStatus('Server host is required.');
+
+  let ip = raw;
+  let port = raw;
+  const parts = raw.split(':');
+  if (parts.length === 2 && /^\d+$/.test(parts[1])) {
+    ip = parts[0];
+    port = Number(parts[1]);
+  }
+
   const r = await api('/api/servers', 'POST', { name, ip, port });
   if (!r.success) return setStatus(r.error || 'Add server failed');
   setStatus('Server added.');

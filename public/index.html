@@ -8,12 +8,17 @@
 </head>
 <body>
   <main class="container">
-    <h1>MC Browser</h1>
+    <header class="hero">
+      <h1>MC Browser</h1>
+      <p>Control your Minecraft bot from one web page.</p>
+    </header>
 
     <section id="authCard" class="card">
       <h2>Login / Register</h2>
-      <input id="authUsername" placeholder="Account username" />
-      <input id="authPassword" type="password" placeholder="Password" />
+      <div class="grid2">
+        <input id="authUsername" placeholder="Account username" />
+        <input id="authPassword" type="password" placeholder="Password" />
+      </div>
       <div class="row">
         <button id="loginBtn">Login</button>
         <button id="registerBtn" class="secondary">Register</button>
@@ -21,16 +26,18 @@
     </section>
 
     <section id="appCard" class="card hidden">
-      <h2 id="welcome"></h2>
-      <button id="logoutBtn" class="secondary">Logout</button>
+      <div class="between">
+        <h2 id="welcome"></h2>
+        <button id="logoutBtn" class="secondary">Logout</button>
+      </div>
 
       <h3>Add server</h3>
       <div class="row wrap">
         <input id="serverName" placeholder="Name" />
-        <input id="serverIp" placeholder="IP / host" />
-        <input id="serverPort" type="number" min="1" max="65535" value="25565" />
+        <input id="serverIp" placeholder="Host or host:port (example.org or example.org:25565)" />
         <button id="addServerBtn">Add</button>
       </div>
+      <p class="hint">Only your Minecraft server port is needed. Viewer runs inside this same app page.</p>
 
       <h3>Your servers</h3>
       <ul id="serverList"></ul>
